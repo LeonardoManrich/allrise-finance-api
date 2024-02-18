@@ -1,9 +1,70 @@
+version: '3.8'
+
 services:
-  postgres:
-    image: 'postgres:latest'
-    environment:
-      - 'POSTGRES_DB=mydatabase'
-      - 'POSTGRES_PASSWORD=secret'
-      - 'POSTGRES_USER=myuser'
+  njord-api:
+    image: 'njord-api:latest'
+    build:
+      context: .
+      dockerfile: ./docker/api/Dockerfile
+    container_name: njord-api
     ports:
-      - '5432'
+      - "8080:8080"
+      - "5005:5005"
+    depends_on:
+      - njord-database
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://njord-database:5432/njord
+      - SPRING_DATASOURCE_USERNAME=njord
+      - SPRING_DATASOURCE_PASSWORD=njord123
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    volumes:
+      - "njord-api-volume:/tmp"
+
+  njord-database:
+    image: 'postgres:14-bullseye'
+    container_name: njord-database
+    environment:
+      - POSTGRES_USER=njord
+      - POSTGRES_PASSWORD=njord123
+    ports:
+      - "5432:5432"
+    volumes:
+      - "njord-database-volume:/var/lib/postgresql/data"
+
+#  jenkins:
+#    image: jenkins/jenkins:lts
+#    container_name: jenkins
+#    volumes:
+#      - "jenkins-volume:/home/njord/jenkins_compose/jenkins_configuration:/var/jenkins_home"
+#      - "jenkins-volume:/var/run/docker.sock"
+#    privileged: true
+#    user: root
+#    ports:
+#      - "9090:9090"
+#      - "50000:50000"
+
+#  prometheus-app:
+#    image: 'prometheus-app:latest'
+#    container_name: prometheus-app
+#    build:
+#      context: ./docker/prometheus
+#    ports:
+#      - "9090:9090"
+#    volumes:
+#      - "prometheus-app-volume:/etc/prometheus"
+#      - "prometheus-app-volume:/prometheus"
+#
+#  grafana-app:
+#    image: 'grafana/grafana:latest'
+#    container_name: grafana-app
+#    ports:
+#      - "3000:3000"
+#    volumes:
+#      - 'grafana-app-volume:/var/lib/grafana'
+
+volumes:
+  njord-api-volume:
+  njord-database-volume:
+#  jenkins-volume:
+#  prometheus-app-volume:
+#  grafana-app-volume:

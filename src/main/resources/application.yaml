@@ -1,1 +1,33 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/njord
+    username: njord
+    password: njord123
+  jpa:
+    hibernate:
+      ddl-auto: update
+    generate-ddl: false
+  session:
+    jdbc:
+      initialize-schema: always
+#  devtools:
+#    remote:
+#      secret: 123
+#  flyway:
+#    enabled: true
+#    default-schema: public
 
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: '*'
+#  metrics:
+#    export:
+#      prometheus:
+#        enabled: true
+#  endpoint:
+#    metrics:
+#      enabled: false
+#    prometheus:
+#      enabled: true
